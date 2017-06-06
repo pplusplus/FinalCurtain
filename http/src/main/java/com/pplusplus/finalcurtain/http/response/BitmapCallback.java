@@ -14,4 +14,12 @@ public abstract class BitmapCallback extends ResponseCallback<Bitmap> {
     protected Bitmap parseResponse(byte[] data) {
         return BitmapFactory.decodeByteArray(data, 0, data.length);
     }
+
+    public boolean isFromCache() {
+        return isFromCache;
+    }
+
+    public void setFromCache(boolean fromCache) {
+        isFromCache = fromCache;
+    }
 }

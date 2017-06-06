@@ -6,7 +6,7 @@ package com.pplusplus.finalcurtain.http.interceptor;
 public class RawResponseInterceptor implements Interceptor<Byte[]> {
 
     @Override
-    public void handle(Byte[] object) {
-
+    public boolean intercept(Byte[] object) {
+        return false;
     }
 }

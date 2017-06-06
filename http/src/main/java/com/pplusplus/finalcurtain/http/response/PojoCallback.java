@@ -22,7 +22,7 @@ public abstract class PojoCallback<POJO> extends ResponseCallback<POJO> {
     @Override
     public POJO parseResponse(byte[] data) {
         try {
-            return RequestManager.getInstance().getJsonParser().jsonToPojo(new String(data, "UTF-8"), clazz);
+            return RequestManager.getJsonParser().jsonToPojo(new String(data, "UTF-8"), clazz);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

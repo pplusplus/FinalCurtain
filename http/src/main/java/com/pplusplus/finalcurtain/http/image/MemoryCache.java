@@ -19,4 +19,8 @@ public class MemoryCache extends LruCache<String, Bitmap> {
     protected int sizeOf(String key, Bitmap bitmap) {
         return bitmap.getByteCount() / 1024;
     }
+
+    public boolean exists(String key) {
+        return get(key) != null;
+    }
 }

@@ -9,7 +9,7 @@ import com.pplusplus.finalcurtain.http.response.Response;
 public class Authenticator implements RequestInterceptor {
 
     @Override
-    public void handle(Request object) {
-
+    public boolean intercept(Request object) {
+        return false;
     }
 }

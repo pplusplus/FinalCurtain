@@ -21,44 +21,34 @@ public abstract class ResponseCallback<T> {
 
     private Looper callbackLooper = Looper.getMainLooper();
 
-    private RawResponseInterceptor rawResponseInterceptor;
-    private ResponseInterceptor responseInterceptor;
+    private Response<T> response = new Response<>();
 
     public ResponseCallback() {
     }
 
-    public void parseResponse(HttpURLConnection connection) {
-        final Response<T> response = new Response<T>();
-        try {
-            response.setStatus(connection.getResponseCode());
-            if (response.getStatus() >= 200 && response.getStatus() <= 299) {
-                response.setBody(parseResponse(UrlConnectionUtils.parseResponseToByteArray(connection.getInputStream())));
-            } else {
-                response.setBody(parseResponse(UrlConnectionUtils.parseResponseToByteArray(connection.getErrorStream())));
-            }
-            response.setHeaders(UrlConnectionUtils.parseResponseHeaders(connection));
-            postResponse(response);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            postError(HttpError.CONNECTION_ERROR);
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-            postError(HttpError.TIMEOUT_ERROR);
-        } catch (IOException e) {
-            e.printStackTrace();
-            postError(HttpError.FAILED);
+    public Response<T> parseResponse(HttpURLConnection connection) throws IOException {
+        response.setStatus(connection.getResponseCode());
+        if (response.getStatus() >= 200 && response.getStatus() <= 299) {
+            response.setBody(parseResponse(UrlConnectionUtils.parseResponseToByteArray(connection.getInputStream())));
+        } else {
+            response.setBody(parseResponse(UrlConnectionUtils.parseResponseToByteArray(connection.getErrorStream())));
         }
+        response.setHeaders(UrlConnectionUtils.parseResponseHeaders(connection));
+        return response;
     }
 
-    public void setResponseInterceptor(ResponseInterceptor<T> interceptor) {
-        this.responseInterceptor = interceptor;
+    public Response<T> getResponse() {
+        return response;
     }
 
-    public void setRawInterceptor(RawResponseInterceptor interceptor) {
-        this.rawResponseInterceptor = interceptor;
+    public void setResponse(Response<T> response) {
+        this.response = response;
     }
 
-    protected void postResponse(final Response<T> response) {
+    /**
+     * Posts response back to the main thread
+     */
+    public void postResponse() {
         new Handler(callbackLooper).post(new Runnable() {
             @Override
             public void run() {
@@ -67,7 +57,10 @@ public abstract class ResponseCallback<T> {
         });
     }
 
-    protected void postError(final HttpError error) {
+    /**
+     * Posts error back to the main thread
+     */
+    public void postError(final HttpError error) {
         new Handler(callbackLooper).post(new Runnable() {
             @Override
             public void run() {

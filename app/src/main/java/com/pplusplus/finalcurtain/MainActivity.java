@@ -1,20 +1,19 @@
 package com.pplusplus.finalcurtain;
 
 import android.graphics.Bitmap;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.pplusplus.finalcurtain.http.manager.RequestManager;
 import com.pplusplus.finalcurtain.http.request.HttpError;
 import com.pplusplus.finalcurtain.http.request.Request;
 import com.pplusplus.finalcurtain.http.request.body.JsonBody;
 import com.pplusplus.finalcurtain.http.response.BitmapCallback;
 import com.pplusplus.finalcurtain.http.response.PojoCallback;
 import com.pplusplus.finalcurtain.http.response.Response;
-import com.pplusplus.finalcurtain.http.response.StringCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,13 +28,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        RequestManager.initialize(this);
+
         final ImageView imageView = (ImageView) findViewById(R.id.img_test);
         Request request = new Request.Builder()
                 .url("http://www.hakodate.travel/en/wp-content/themes/thakodate/more-about-hakodate/our-suggestions-in-hakodate/nightview/img/en_main.jpg")
                 .callback(new BitmapCallback() {
+
                     @Override
                     public void onResponse(Response<Bitmap> response) {
                         imageView.setImageBitmap(response.get());
+                        Log.d("MainActivity", "Callback is from cache: " + String.valueOf(isFromCache()));
                     }
 
                     @Override
@@ -62,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onError(HttpError error) {
 
                     }
-                }).body(new JsonBody("{}"))
+                })
+                .body(new JsonBody("{}"))
                 .build()
                 .asyncGo();
     }

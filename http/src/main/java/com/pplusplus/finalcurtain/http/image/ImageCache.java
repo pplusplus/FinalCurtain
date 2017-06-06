@@ -1,6 +1,8 @@
 package com.pplusplus.finalcurtain.http.image;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 /**
  * Created by Pat Powell on 02/06/2017.
@@ -8,9 +10,14 @@ import android.graphics.Bitmap;
 public class ImageCache {
 
     final private MemoryCache memoryCache = new MemoryCache();
-    final private DiskCache diskCache = new DiskCache();
+    final private DiskCache diskCache;
 
-    public ImageCache() {
+    public ImageCache(Context context) {
+        diskCache = new DiskCache(context);
+    }
+
+    public boolean exists(String key) {
+        return memoryCache.exists(key) || diskCache.exists(key);
     }
 
     public void get(final String key, BitmapLoadedListener listener) {

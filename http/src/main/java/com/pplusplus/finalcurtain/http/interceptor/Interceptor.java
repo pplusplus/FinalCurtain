@@ -5,5 +5,5 @@ package com.pplusplus.finalcurtain.http.interceptor;
  */
 public interface Interceptor<T> {
 
-    void handle(T object);
+    boolean intercept(T object);
 }
