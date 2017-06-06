@@ -1,5 +1,6 @@
 package com.pplusplus.finalcurtain.http.interceptor;
 
+import com.pplusplus.finalcurtain.http.request.Request;
 import com.pplusplus.finalcurtain.http.response.Response;
 
 /**
@@ -9,5 +10,5 @@ import com.pplusplus.finalcurtain.http.response.Response;
 /**
  * @class ResponseInterceptor
  */
-public interface ResponseInterceptor<T> extends Interceptor<Response<T>> {
+public interface ResponseInterceptor extends Interceptor<Request> {
 }

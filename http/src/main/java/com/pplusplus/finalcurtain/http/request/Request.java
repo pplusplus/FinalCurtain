@@ -112,7 +112,6 @@ public class Request {
     private Request(Builder builder) {
         this.url = builder.url;
         this.callback = builder.callback;
-        isBitmapRequest = callback instanceof BitmapCallback;
         this.timeout = builder.timeout;
         this.body = builder.body;
         this.method = builder.method;
@@ -148,7 +147,7 @@ public class Request {
     }
 
     public boolean isBitmapRequest() {
-        return isBitmapRequest;
+        return callback instanceof BitmapCallback;
     }
 
     public boolean useCache() {
@@ -193,8 +192,7 @@ public class Request {
                 dataOutputStream.write(bytes);
             }
             callback.parseResponse(urlConnection);
-            callback.getResponse().addAllInterceptors(responseInterceptors);
-            if (callback.getResponse().hasBeenIntercepted()) {
+            if (hasResponseBeenIntercepted()) {
                 return;
             }
             callback.postResponse();
@@ -217,6 +215,16 @@ public class Request {
     private boolean hasRequestBeenIntercepted() {
         boolean intercepted = false;
         for (RequestInterceptor i : requestInterceptors) {
+            if (i.intercept(this)) {
+                intercepted = true;
+            }
+        }
+        return intercepted;
+    }
+
+    private boolean hasResponseBeenIntercepted() {
+        boolean intercepted = false;
+        for (ResponseInterceptor i : responseInterceptors) {
             if (i.intercept(this)) {
                 intercepted = true;
             }

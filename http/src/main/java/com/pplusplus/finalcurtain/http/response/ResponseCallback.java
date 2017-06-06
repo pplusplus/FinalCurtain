@@ -3,15 +3,11 @@ package com.pplusplus.finalcurtain.http.response;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.pplusplus.finalcurtain.http.interceptor.RawResponseInterceptor;
-import com.pplusplus.finalcurtain.http.interceptor.ResponseInterceptor;
 import com.pplusplus.finalcurtain.http.request.HttpError;
 import com.pplusplus.finalcurtain.http.util.UrlConnectionUtils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 /**
  * Created by Pat Powell on 03/06/2017.

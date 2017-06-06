@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.pplusplus.finalcurtain.http.interceptor.RequestInterceptor;
+import com.pplusplus.finalcurtain.http.interceptor.ResponseInterceptor;
 import com.pplusplus.finalcurtain.http.request.HttpError;
 import com.pplusplus.finalcurtain.http.request.Request;
 import com.pplusplus.finalcurtain.http.response.BitmapCallback;
@@ -15,11 +16,11 @@ import java.net.HttpURLConnection;
 /**
  * Created by Pat Powell on 04/06/2017.
  */
-public class RequestImageCache implements RequestInterceptor {
+public class RequestImageCacheInterceptor implements RequestInterceptor {
 
     private ImageCache imageCache;
 
-    public RequestImageCache(Context context) {
+    public RequestImageCacheInterceptor(Context context) {
         imageCache = new ImageCache(context);
     }
 
@@ -50,5 +51,20 @@ public class RequestImageCache implements RequestInterceptor {
             return true;
         }
         return false;
+    }
+
+    public ResponseInterceptor getResponseInterceptor() {
+        return new ResponseImageCacher();
+    }
+
+    private class ResponseImageCacher implements ResponseInterceptor {
+
+        @Override
+        public boolean intercept(Request object) {
+            if (object.isBitmapRequest()) {
+                imageCache.put(generateKey(object), (Bitmap) object.getCallback().getResponse().get());
+            }
+            return false;
+        }
     }
 }

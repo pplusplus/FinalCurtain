@@ -17,8 +17,6 @@ public class Response<T> {
     public int status;
     public Map<String, String> headers = new HashMap<String, String>();
 
-    private Set<ResponseInterceptor<T>> responseInterceptors = new HashSet<>();
-
     public Response() {
     }
 
@@ -50,21 +48,4 @@ public class Response<T> {
         this.headers = headers;
     }
 
-    public void addInterceptor(ResponseInterceptor<T> interceptor) {
-        responseInterceptors.add(interceptor);
-    }
-
-    public void addAllInterceptors(Set<ResponseInterceptor<T>> responseInterceptors) {
-        responseInterceptors.addAll(responseInterceptors);
-    }
-
-    public boolean hasBeenIntercepted() {
-        boolean intercepted = false;
-        for (ResponseInterceptor<T> i : responseInterceptors) {
-            if (i.intercept(this)) {
-                intercepted = true;
-            }
-        }
-        return intercepted;
-    }
 }
